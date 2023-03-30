@@ -1,0 +1,85 @@
+launch:
+
+# Note: Argument defaults must be YAML strings.
+
+#
+# Maunder motors and wheels
+#
+# Wheel diameter: 0.061m
+# One wheel revolution: .191m, revolution/m = 5.218 m^-1
+# Gear ratio: 74.83
+# Ticks per motor revolution: 48
+# Ticks per wheel rotation: 3591.84
+# Ticks/m = ticks/rotation*rotation/m = 18742.921
+
+- arg: {name: use_sim_time, default: "false"}
+- arg: {name: ticks_per_meter, default: "18742.921"}
+- arg: {name: wheel_separation, default: "0.18"}
+
+- node:
+    name: diff_drive_controller
+    pkg: diff_drive
+    exec: diff_drive_controller
+    param:
+    - {name: use_sim_time, value: $(var use_sim_time)}
+    - {name: ticks_per_meter, value: $(var ticks_per_meter)}
+    - {name: wheel_separation, value: $(var wheel_separation)}
+    - {name: max_motor_speed, value: 1874.2921}
+    - {name: timeout, value: 1.0}
+
+- node:
+    name: odom_publisher
+    pkg: diff_drive
+    exec: diff_drive_odometry
+    param:
+    - {name: use_sim_time, value: $(var use_sim_time)}
+    - {name: ticks_per_meter, value: $(var ticks_per_meter)}
+    - {name: wheel_separation, value: $(var wheel_separation)}
+
+- node:
+    name: mobility_commander
+    pkg: blue_ros2_bridge
+    exec: mobility_commander
+    param:
+    - {name: server_host, value: beaglebone.local}
+
+- node:
+    name: robot_monitor
+    pkg: blue_ros2_bridge
+    exec: robot_monitor
+    param:
+    - {name: server_host, value: beaglebone.local}
+    - {name: frame_id, value: base_link}
+
+- node:
+    name: image_publisher
+    pkg: blue_ros2_bridge
+    exec: image_publisher
+    param:
+    - {name: server_host, value: beaglebone.local}
+    - {name: jpeg_quality, value: 80}
+    - {name: frame_rate, value: 2}
+    - {name: camera_frame, value: camera_link}
+
+- node:
+    name: diff_drive_go_to_goal
+    pkg: diff_drive
+    exec: diff_drive_go_to_goal
+    param:
+    - {name: rate, value: 20.0}
+    - {name: kP, value: 0.5 }
+    - {name: kA, value: 1.0 }
+    - {name: kB, value: -0.8 }
+    - {name: max_linear_speed, value: 0.2 }
+    - {name: min_linear_speed, value: 0.05 }
+    - {name: max_angular_speed, value: 0.7 }
+    - {name: min_angular_speed, value: 0.1 }
+    - {name: linear_tolerance, value: 0.01 }
+    - {name: angular_tolerance, value: 0.04 }
+    - {name: forwardMovementOnly, value: false }
+
+- node:
+    name: rviz2
+    pkg: rviz2
+    exec: rviz2
+    args: "-d $(find-pkg-share maunder)/teleop.rviz"
