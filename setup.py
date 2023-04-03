@@ -26,6 +26,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'object_detector = maunder.object_detector:main',
         ],
     },
 )
