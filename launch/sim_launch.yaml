@@ -21,7 +21,7 @@ launch:
     name: world_to_odom
     pkg: tf2_ros
     exec: static_transform_publisher
-    args: "--frame-id map --child-frame-id odom"
+    args: "--frame-id map --child-frame-id odom --x 2"
 
 - node:
     name: diff_drive_controller
@@ -44,39 +44,9 @@ launch:
     - {name: wheel_separation, value: $(var wheel_separation)}
 
 - node:
-    name: mobility_commander
-    pkg: blue_ros2_bridge
-    exec: mobility_commander
-    param:
-    - {name: server_host, value: $(var server_host)}
-
-- node:
-    name: robot_monitor
-    pkg: blue_ros2_bridge
-    exec: robot_monitor
-    param:
-    - {name: server_host, value: $(var server_host)}
-    - {name: frame_id, value: base_link}
-
-- node:
-    name: image_publisher
-    pkg: blue_ros2_bridge
-    exec: image_publisher
-    param:
-    - {name: server_host, value: $(var server_host)}
-    - {name: jpeg_quality, value: 80}
-    - {name: frame_rate, value: 2}
-    - {name: camera_frame, value: camera_link}
-
-- node:
-    name: object_detector
-    pkg: maunder
-    exec: object_detector
-    param:
-    - {name: ball_slope, value: 11.5}
-    - {name: ball_bias, value: 0.070}
-    - {name: goal_slope, value: 9.13}
-    - {name: goal_bias, value: -0.00991}
+    name: robot
+    pkg: diff_drive
+    exec: diff_drive_mock_robot
 
 - node:
     name: rviz2
@@ -84,12 +54,3 @@ launch:
     exec: rviz2
     args: "-d $(find-pkg-share maunder)/teleop.rviz"
 
-#- node:
-#    name: teleop_key
-#    pkg: turtlesim
-#    exec: turtle_teleop_key
-#    param:
-#    - {name: scale_linear, value: 0.1}
-#    - {name: scale_angular, value: 0.5}
-#    remap:
-#    - {from: /turtle1/cmd_vel, to: /cmd_vel}

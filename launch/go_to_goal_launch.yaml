@@ -17,6 +17,12 @@ launch:
 - arg: {name: wheel_separation, default: "0.18"}
 
 - node:
+    name: world_to_odom
+    pkg: tf2_ros
+    exec: static_transform_publisher
+    args: "--frame-id map --child-frame-id odom"
+
+- node:
     name: diff_drive_controller
     pkg: diff_drive
     exec: diff_drive_controller
