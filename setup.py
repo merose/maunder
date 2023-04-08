@@ -27,6 +27,7 @@ setup(
     entry_points={
         'console_scripts': [
             'object_detector = maunder.object_detector:main',
+            'turn_to_ball = maunder.turn_to_ball:main',
         ],
     },
 )

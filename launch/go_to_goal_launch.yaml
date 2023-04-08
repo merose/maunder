@@ -30,7 +30,7 @@ launch:
     - {name: use_sim_time, value: $(var use_sim_time)}
     - {name: ticks_per_meter, value: $(var ticks_per_meter)}
     - {name: wheel_separation, value: $(var wheel_separation)}
-    - {name: max_motor_speed, value: 1874.2921}
+    - {name: max_motor_speed, value: 1000}
     - {name: timeout, value: 1.0}
 
 - node:
@@ -72,14 +72,14 @@ launch:
     pkg: diff_drive
     exec: diff_drive_go_to_goal
     param:
-    - {name: rate, value: 20.0}
+    - {name: rate, value: 10.0}
     - {name: kP, value: 0.5 }
     - {name: kA, value: 1.0 }
     - {name: kB, value: -0.8 }
-    - {name: max_linear_speed, value: 0.2 }
-    - {name: min_linear_speed, value: 0.05 }
-    - {name: max_angular_speed, value: 0.7 }
-    - {name: min_angular_speed, value: 0.1 }
+    - {name: max_linear_speed, value: 0.05 }
+    - {name: min_linear_speed, value: 0.008 }
+    - {name: max_angular_speed, value: 0.1 }
+    - {name: min_angular_speed, value: 0.05 }
     - {name: linear_tolerance, value: 0.01 }
     - {name: angular_tolerance, value: 0.04 }
     - {name: forwardMovementOnly, value: false }
