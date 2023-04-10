@@ -68,7 +68,7 @@ class TurnToBallNode(BaseNode):
         self.tree = BehaviourTree(root=task)
         self.tree.setup(node=self.node)
 
-        self.node.create_timer(1, self.tick)
+        self.node.create_timer(0.25, self.tick)
 
     def tick(self):
         self.log_info('Ticking tree')

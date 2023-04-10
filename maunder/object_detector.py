@@ -17,7 +17,7 @@ import numpy as np
 import rclpy
 from rclpy.node import Node
 
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage
 
 from tf2_ros import TransformBroadcaster
 
@@ -183,18 +183,19 @@ class ObjectDetectorNode(BaseNode):
         self.goal_point_pub = self.node.create_publisher(
             PointStamped, 'goal_image_position', 10)
 
-        self.node.create_subscription(Image, 'camera/image', self.on_image, 10)
+        self.node.create_subscription(CompressedImage, 'image/compressed',
+                                      self.on_image, 10)
 
     def on_image(self, msg):
-        frame = np.reshape(np.frombuffer(msg.data, np.uint8),
-                           (msg.height, msg.width, 3))
+        raw = np.frombuffer(msg.data)
+        frame = cv.imdecode(raw, cv.IMREAD_UNCHANGED)
 
         ball_detection = self.ball_finder.find_ball(frame)
         if ball_detection:
             ball_center, ball_radius = ball_detection
             ball_sighting = Sighting()
             ball_sighting.heading = self.get_heading(
-                ball_center[0], ball_center[1], msg.width, msg.height)
+                ball_center[0], ball_center[1], frame.shape[1], frame.shape[0])
             ball_sighting.distance = self.get_ball_distance(ball_radius)
             self.ball_sighting_pub.publish(ball_sighting)
             self.send_transform(msg.header.stamp, 'ball', 'base_link',
@@ -205,7 +206,7 @@ class ObjectDetectorNode(BaseNode):
             goal_center, goal_radius = goal_detection
             goal_sighting = Sighting()
             goal_sighting.heading = self.get_heading(
-                goal_center[0], goal_center[1], msg.width, msg.height)
+                goal_center[0], goal_center[1], frame.shape[1], frame.shape[0])
             goal_sighting.distance = self.get_goal_distance(goal_radius)
             self.goal_sighting_pub.publish(goal_sighting)
             self.send_transform(msg.header.stamp, 'goal', 'base_link',

@@ -64,9 +64,12 @@ launch:
     exec: image_publisher
     param:
     - {name: server_host, value: $(var server_host)}
-    - {name: jpeg_quality, value: 80}
-    - {name: frame_rate, value: 2}
     - {name: camera_frame, value: camera_link}
+
+- node:
+    name: image_viewer
+    pkg: blue_ros2_bridge
+    exec: image_viewer
 
 - node:
     name: object_detector
@@ -77,6 +80,13 @@ launch:
     - {name: ball_bias, value: 0.070}
     - {name: goal_slope, value: 9.13}
     - {name: goal_bias, value: -0.00991}
+
+- node:
+    name: servo_commander
+    pkg: blue_ros2_bridge
+    exec: servo_commander
+    param:
+    - {name: server_host, value: $(var server_host)}
 
 - node:
     name: rviz2
